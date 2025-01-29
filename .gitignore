@@ -6,6 +6,20 @@ __pycache__/
 # C extensions
 *.so
 
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS folder attributes
+Icon?
+._*
+
+# macOS metadata files
+.fseventsd
+.spotlight-V100
+.Trashes
+
 # Distribution / packaging
 .Python
 build/
