@@ -1,0 +1,26 @@
+{% extends "portal/dashboard-navbar.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        {% include "portal/staff/staff-sidebar.html" %}
+        
+        <div class="col-md-9">
+            <div class="card shadow-sm mt-3">
+                <div class="card-body">
+                    <h2 class="h4">Update your Profile, {{ request.user.first_name }}</h2>
+                    <form method="post" action="#">
+                        {% csrf_token %}
+                        {{ form | crispy }}
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                Update
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

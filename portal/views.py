@@ -1,5 +1,15 @@
 from django.shortcuts import render
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
+class StaffDashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'portal/staff/staff-dashboard.html'
+
+    
+class AdminDashboardView(LoginRequiredMixin,TemplateView):
+    template_name = 'portal/admin/admin-dashboard.html'
+
+    
 # ADMIN DASHBOARD
 # Staff 
 def staff_create(request):
