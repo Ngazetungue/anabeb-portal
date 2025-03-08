@@ -21,7 +21,7 @@ class CustomUser(AbstractUser):
         ('blocked', 'Blocked'),
     ]
 
-    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='patient')
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='staff')
     first_name = models.CharField(max_length=150, null=True, blank=True)
     last_name = models.CharField(max_length=150, null=True, blank=True)
     identification_document = models.CharField(
@@ -34,7 +34,7 @@ class CustomUser(AbstractUser):
         max_length=15,
         validators=[RegexValidator(r'^\d{1,15}$', 'Phone number must contain only digits and be up to 15 digits long.')]
     )
-    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='patient')
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='staff')
     status = models.CharField(max_length=10, choices=USER_STATUS_CHOICES, default='active')
     date_join = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
@@ -77,7 +77,7 @@ class Profile(models.Model):
     )
     date_of_birth = models.DateField(null=True, blank=True)
     sex = models.CharField(max_length=10, choices=SEX, default="male")
-    user_type = models.CharField(max_length=10, choices=CustomUser.USER_TYPE_CHOICES, default='patient')
+    user_type = models.CharField(max_length=10, choices=CustomUser.USER_TYPE_CHOICES, default='staff')
     status = models.CharField(max_length=10, choices=USER_STATUS_CHOICES, default='active')
     date_join = models.DateTimeField(auto_now_add=True)
 
