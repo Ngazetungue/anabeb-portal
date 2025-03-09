@@ -1,0 +1,15 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-8">
+    <h2 class="text-2xl font-semibold mb-4">Are you sure you want to delete this member?</h2>
+    <p class="mb-4">Member: {{ member.first_name }} {{ member.last_name }}</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Yes, Delete</button>
+    </form>
+    <a href="{% url 'member_list' %}" class="ml-4 text-blue-500 hover:text-blue-700">Cancel</a>
+</div>
+
+{% endblock content %}

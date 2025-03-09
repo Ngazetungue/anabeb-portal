@@ -1,0 +1,54 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+
+<!-- Button for Adding New Member or Guard -->
+<a href="{% url 'portal:add_member' %}" class="absolute top-13 right-0 mt-4 mr-6 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition duration-200 ease-in-out">
+    Add New
+</a>
+
+<!-- Table for Model Data -->
+<div class="w-full bg-white p-6 shadow-xl rounded-lg mt-12 overflow-x-auto">
+    <table class="w-full border-collapse border border-gray-300">
+        <thead class="bg-green-100 text-green-700">
+            <tr>
+                <th class="px-6 py-4 border-b text-left">First Name</th>
+                <th class="px-6 py-4 border-b text-left">Last Name</th>
+                <th class="px-6 py-4 border-b text-left">Gender</th>
+                <th class="px-6 py-4 border-b text-left">I.D</th>
+                <th class="px-6 py-4 border-b text-left">D.O.B</th>
+                <th class="px-6 py-4 border-b text-left">Age</th>
+                <th class="px-6 py-4 border-b text-left">Membership Period</th>
+                <th class="px-6 py-4 border-b text-left">Status</th>
+                <th class="px-6 py-4 border-b text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="text-gray-600">
+            {% for member in members %}
+            <tr class="border-b hover:bg-gray-50 transition duration-200 ease-in-out">
+                <td class="px-6 py-4">{{ member.first_name }}</td>
+                <td class="px-6 py-4">{{ member.last_name }}</td>
+                <td class="px-6 py-4">{{ member.gender }}</td>
+                <td class="px-6 py-4">{{ member.identification_document }}</td>
+                <td class="px-6 py-4">{{ member.date_of_birth }}</td>
+                <td class="px-6 py-4">{{ member.age }}</td>
+                <td class="px-6 py-4">{{ member.membership_period }}</td>
+                <td class="px-6 py-4">
+                    {% if member.status == "deceased" %}
+                        <span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs">Deceased</span>
+                    {% else %}
+                        <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs">Alive</span>
+                    {% endif %}
+                </td>
+                <td class="px-6 py-4">
+                    <!-- Actions: Edit/Delete buttons -->
+                    <a href="{% url 'portal:edit_member' member.id %}" class="text-blue-500 hover:text-blue-700 mr-4">Edit</a>
+                    <a href="{% url 'portal:delete_member' member.id %}" class="text-red-500 hover:text-red-700">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

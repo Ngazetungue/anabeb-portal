@@ -1,0 +1,53 @@
+{% extends "portal/base.html" %}
+
+{% block content %}
+    <div class="container mx-auto">
+        <div class="flex justify-between mb-4">
+            <h1 class="text-2xl font-semibold">Guard List</h1>
+            <a href="{% url 'add_guard' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                Add New Guard
+            </a>
+        </div>
+        <div class="overflow-x-auto bg-white rounded shadow-lg">
+            <table class="min-w-full text-left table-auto">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border-b">First Name</th>
+                        <th class="py-2 px-4 border-b">Last Name</th>
+                        <th class="py-2 px-4 border-b">Gender</th>
+                        <th class="py-2 px-4 border-b">Date of Birth</th>
+                        <th class="py-2 px-4 border-b">Age</th>
+                        <th class="py-2 px-4 border-b">Phone Number</th>
+                        <th class="py-2 px-4 border-b">Village Assigned</th>
+                        <th class="py-2 px-4 border-b">Status</th>
+                        <th class="py-2 px-4 border-b">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for guard in guards %}
+                    <tr>
+                        <td class="py-2 px-4 border-b">{{ guard.first_name }}</td>
+                        <td class="py-2 px-4 border-b">{{ guard.last_name }}</td>
+                        <td class="py-2 px-4 border-b">{{ guard.gender }}</td>
+                        <td class="py-2 px-4 border-b">{{ guard.date_of_birth }}</td>
+                        <td class="py-2 px-4 border-b">{{ guard.age }}</td>
+                        <td class="py-2 px-4 border-b">{{ guard.cellphone_number }}</td>
+                        <td class="py-2 px-4 border-b">{{ guard.get_village_assigned_display }}</td>
+                        <td class="py-2 px-4 border-b">{{ guard.get_status_display }}</td>
+                        <td class="py-2 px-4 border-b">
+                            <a href="{% url 'edit_guard' guard.id %}" class="text-blue-500 hover:text-blue-700">Edit</a>
+                            |
+                            <a href="{% url 'delete_guard' guard.id %}" class="text-red-500 hover:text-red-700">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center py-4">No guards found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock content %}
