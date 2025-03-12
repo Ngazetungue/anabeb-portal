@@ -39,9 +39,17 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "portal",
     "users",
+    "crispy_forms",
+    "crispy_bootstrap5",
+     "crispy_tailwind",
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+CRISPY_TEMPLATE_PACK = "tailwind"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

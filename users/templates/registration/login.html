@@ -1,33 +1,39 @@
-{% comment %} {% extends "portal/base2.html" %} {% endcomment %}
 {% load static %}
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style type="text/tailwindcss">
+  @theme {
+    --color-clifford: #da373d;
+  }
+</style>
+{% load crispy_forms_tags %}
 {% block content %}
 
-<div class="row no-gutters">
-  <!-- Hero Section - Hidden on small screens -->
-  <div class="col-12 col-lg-6 d-none d-lg-flex align-items-center justify-content-center" style="background-color: #000080; height: 100vh;">
-    <div class="text-center text-white">
-      <!-- Logo -->
-      {% comment %} <img src="{% static 'dashboard/logo-dmc.png' %}" alt="Logo" class="mb-4" style="max-width: 320px;"> {% endcomment %}
-      
-      <!-- Responsive heading -->
-      <h1 class="display-4">Welcome to Our Portal</h1>
-      <p class="lead mt-3">Your Environment Is <strong>Our Priority</strong></p>
-    </div>
+<div class="flex h-screen">
+  <!-- Image Section with Brown Overlay -->
+  <div class="hidden lg:flex w-1/2 items-center justify-center bg-brown-700 relative">
+    <!-- Brown overlay on image -->
+    <div class="absolute inset-0 bg-brown-600 opacity-50"></div>
+    <img src="{% static 'portal/anabeb-login.jpg' %}" alt="Wildlife Management" class="w-full h-full object-cover z-10">
   </div>
 
   <!-- Login Form Section -->
-  <div class="col-12 col-lg-6 d-flex align-items-center justify-content-center" style="height: 100vh; background: #F8F8F8;">
-    <div class="p-4">
-      <div class="text-center mb-4">
-        <h1 class="text-primary">Portal</h1>
-        <p class="text-primary">Exclusive access for Anabeb Conservancy Wildlife Management System members</p>
+  <div class="w-full lg:w-1/2 flex items-center justify-center bg-gray-200 p-6">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-600">Portal</h1>
+        <p class="text-gray-600">Exclusive access for Anabeb Conservancy Wildlife Management System members</p>
       </div>
       <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
-        {{ form }}
-        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        {{ form|crispy }}
+        <button type="submit" class="w-full bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-500 transition">Login</button>
       </form>
-      <p class="mt-4 text-center">Not a member yet? <a href="#" class="text-primary">Apply to become a member</a></p>
+      {% comment %} <p class="mt-4 text-center text-gray-600">Not a member yet? <a href="#" class="text-blue-600 hover:underline">Apply to become a member</a></p> {% endcomment %}
     </div>
   </div>
 </div>

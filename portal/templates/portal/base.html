@@ -118,7 +118,7 @@
               class="flex items-center space-x-2 focus:outline-none text-gray-700 hover:text-gray-900 transition-colors"
             >
               <i class="bi bi-person-circle text-xl"></i>
-              <strong>User</strong>
+              <strong>{{ request.user.first_name }} {{ request.user.last_name }}</strong>
             </button>
             <div
               class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md hidden group-hover:block"
@@ -154,58 +154,67 @@
         <ul class="space-y-2">
           <li>
             <a
-              href="#"
+              href="{% url "portal:staff-dashboard" %}"
               class="flex items-center space-x-2 bg-blue-500 text-white px-3 py-2 rounded-md"
             >
               <i class="bi bi-house-door"></i>
               <span>Home</span>
             </a>
           </li>
-          <li>
-            <a
-              href="#"
-              class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
-            >
-              <i class="bi bi-speedometer2"></i>
-              <span>Dashboard</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
-            >
-              <i class="bi bi-person-badge"></i>
-              <span>Manage Staff</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="{% url "portal:member_list" %}"
-              class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
-            >
-              <i class="bi bi-person"></i>
-              <span>Manage Member</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
-            >
-              <i class="bi bi-house"></i>
-              <span>Manage Village</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
-            >
-              <i class="bi bi-shield-lock"></i>
-              <span>Manage Guard</span>
-            </a>
-          </li>
+
+          {% if request.user.is_authenticated %}
+            {% if request.user.user_type == 'admin' %}
+              <!-- Admin sees everything -->
+              <li>
+                <a
+                  href="#"
+                  class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
+                >
+                  <i class="bi bi-person-badge"></i>
+                  <span>Manage Staff</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'portal:member_list' %}"
+                  class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
+                >
+                  <i class="bi bi-person"></i>
+                  <span>Manage Member</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'portal:guard_list' %}"
+                  class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
+                >
+                  <i class="bi bi-shield-lock"></i>
+                  <span>Manage Guard</span>
+                </a>
+              </li>
+            {% elif request.user.user_type == 'staff' %}
+              <!-- Staff sees only Member and Guard -->
+              <li>
+                <a
+                  href="{% url 'portal:member_list' %}"
+                  class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
+                >
+                  <i class="bi bi-person"></i>
+                  <span>Manage Member</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'portal:guard_list' %}"
+                  class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
+                >
+                  <i class="bi bi-shield-lock"></i>
+                  <span>Manage Guard</span>
+                </a>
+              </li>
+            {% endif %}
+          {% endif %}
+
         </ul>
       </div>
 

@@ -1,15 +1,34 @@
 {% extends "portal/base.html" %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-8">
-    <h2 class="text-2xl font-semibold mb-4">Are you sure you want to delete this member?</h2>
-    <p class="mb-4">Member: {{ member.first_name }} {{ member.last_name }}</p>
-    
-    <form method="POST">
-        {% csrf_token %}
-        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Yes, Delete</button>
-    </form>
-    <a href="{% url 'member_list' %}" class="ml-4 text-blue-500 hover:text-blue-700">Cancel</a>
-</div>
+<div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-6">
+    <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Members List</h2>
 
+    <!-- Delete Button (Triggers Modal) -->
+    <button @click="open = true" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition">
+        Delete Member
+    </button>
+
+    <!-- Modal -->
+    <div x-data="{ open: false }">
+        <div x-show="open" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">Confirm Deletion</h3>
+                <p class="text-gray-600 mb-6">Are you sure you want to remove <span class="font-semibold">{{ member.first_name }} {{ member.last_name }}</span>?</p>
+
+                <div class="flex justify-end space-x-3">
+                    <button @click="open = false" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400 transition">
+                        Cancel
+                    </button>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

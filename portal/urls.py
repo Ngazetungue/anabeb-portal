@@ -16,6 +16,10 @@ urlpatterns = [
     path('members/', views.member_list, name='member_list'),
     path('guards/', views.guard_list, name='guard_list'),
 
+    # Details view for Members and Guards
+    path('members/<int:id>/', views.member_detail, name='member_detail'),
+    path('guards/<int:id>/', views.guard_detail, name='guard_detail'),
+
     # Add views for creating Members and Guards
     path('add/member/', views.add_member, name='add_member'), 
     path('add/guard/', views.add_guard, name='add_guard'),

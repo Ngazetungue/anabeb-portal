@@ -9,21 +9,21 @@
         <!-- Left Section: Cards (Spans 2 Columns) -->
         <div class="sm:col-span-2 space-y-4">
             <!-- Guards Card -->
-            <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
+            <div class="bg-blue-200 shadow-lg rounded-lg p-6 border-l-4 border-blue-500">
                 <h2 class="text-gray-500 text-lg font-semibold">Guards</h2>
-                <p class="text-3xl font-bold text-gray-900">120</p>
+                <p class="text-3xl font-bold text-gray-900">{{number_of_guards}}</p>
             </div>
     
             <!-- Staff Card -->
-            <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-green-500">
+            <div class="bg-green-200 shadow-lg rounded-lg p-6 border-l-4 border-green-500">
                 <h2 class="text-gray-500 text-lg font-semibold">Staff</h2>
                 <p class="text-3xl font-bold text-gray-900">45</p>
             </div>
     
             <!-- Members Card -->
-            <div class="bg-white shadow-lg rounded-lg p-6 border-l-4 border-red-500">
+            <div class="bg-red-200 shadow-lg rounded-lg p-6 border-l-4 border-red-500">
                 <h2 class="text-gray-500 text-lg font-semibold">Members</h2>
-                <p class="text-3xl font-bold text-gray-900">15</p>
+                <p class="text-3xl font-bold text-gray-900">{{number_of_members}}</p>
             </div>
         </div>
     
@@ -34,7 +34,6 @@
         </div>
     </div>
       
-    
       <div class="flex flex-col md:flex-row gap-4">
         <!-- Table Section (2/3 width on medium screens and up, full width on small screens) -->
         <div class="w-full md:w-2/3 bg-white p-4 shadow-md rounded-lg">
@@ -100,7 +99,7 @@
   
         <!-- Bar Chart Section -->
         <div class="w-full md:w-1/2 bg-white p-4 shadow-md rounded-lg">
-          <h2 class="text-xl font-bold mb-4">Attendance</h2>
+          <h2 class="text-xl font-bold mb-4">Members</h2>
           <canvas id="barChart"></canvas>
         </div>
       </div>

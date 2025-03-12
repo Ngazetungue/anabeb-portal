@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from datetime import date
 
@@ -84,19 +85,21 @@ class Member(models.Model):
         ("otjatjondjira", "Otjatjondjira"),
     ]
 
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
-    gender = models.CharField(max_length=10, choices=SEX, default="male")
+    first_name = models.CharField(max_length=150, help_text="Enter the member's first name.")
+    last_name = models.CharField(max_length=150, help_text="Enter the member's last name.")
+    gender = models.CharField(max_length=10, choices=SEX, default="male", help_text="Select the member's gender.")
     identification_document = models.CharField(
         max_length=15,
+        unique=True,
         validators=[
             RegexValidator(
                 r"^\d{1,11}$",
                 "Identification number must contain only digits and be up to 11 digits long.",
             )
         ],
+        help_text="Enter the member's identification number (up to 11 digits).",
     )
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(help_text="Enter the member's date of birth.")
     cellphone_number = models.CharField(
         max_length=15,
         validators=[
@@ -105,16 +108,29 @@ class Member(models.Model):
                 "Phone number must contain only digits and be up to 10 digits long.",
             )
         ],
+        help_text="Enter the member's cellphone number (up to 10 digits).",
     )
     village = models.CharField(
-        max_length=50, choices=VILLAGE, default="warmquelle"
+        max_length=50, choices=VILLAGE, default="warmquelle", help_text="Select the member's village."
     )
-    date_join = models.DateField()
-    status = models.CharField(max_length=10, choices=MEMBER_STATUS_CHOICES, default="alive")
-    date_deceased = models.DateField(null=True, blank=True)
+    date_join = models.DateField(help_text="Enter the date the member joined.")
+    status = models.CharField(max_length=10, choices=MEMBER_STATUS_CHOICES, default="alive", help_text="Select the member's status.")
+    date_deceased = models.DateField(null=True, blank=True, help_text="Enter the date the member passed away (if applicable).")
 
     def __str__(self):
-        return self.first_name
+        return f"{self.first_name} {self.last_name}"
+
+    def clean(self):
+        super().clean()
+        if self.status == "deceased" and not self.date_deceased:
+            raise ValidationError({"date_deceased": "Date deceased is required for deceased members."})
+        if self.status == "alive" and self.date_deceased:
+            raise ValidationError({"date_deceased": "Date deceased should be empty for alive members."})
+        if self.date_deceased:
+            if self.date_deceased < self.date_of_birth:
+                raise ValidationError({"date_deceased": "Date deceased cannot be before date of birth."})
+            if self.date_deceased < self.date_join:
+                raise ValidationError({"date_deceased": "Date deceased cannot be before join date."})
 
     def age(self):
         if self.date_of_birth:
@@ -136,3 +152,7 @@ class Member(models.Model):
             active_years -= 1
         return active_years
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['identification_document'], name='unique_identification_document')
+        ]

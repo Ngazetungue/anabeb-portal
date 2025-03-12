@@ -1,12 +1,53 @@
 {% extends "portal/base.html" %}
+{% load crispy_forms_tags %}
 
-{% block content %}
-<div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-8">
-    <h2 class="text-2xl font-semibold mb-4">Edit Member: {{ member.first_name }} {{ member.last_name }}</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Changes</button>
-    </form>
-</div>
-{% endblock content %}
+<div class="lg:ml-[250px] p-4">
+    {% block content %}
+
+    <div class="flex-1 sm:py-3 w-full left-0">
+    
+      <div class="flex flex-col md:flex-row gap-4">
+        <!-- Form Section (2/3 width on medium screens, full width on small screens) -->
+        <div class="w-full md:w-2/3 bg-white p-4 shadow-md rounded-lg">
+
+            <div class="w-full md:w-2/3 bg-white p-6">
+                <h2 class="text-2xl font-semibold mb-4">Edit Member</h2>
+                
+                <!-- Member Details -->
+                <p class="text-lg text-gray-600 mb-4">
+                    Editing details for <span class="font-semibold text-gray-900">{{ member.first_name }} {{ member.last_name }}</span>
+                </p>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4 mt-4">
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            Save Changes
+                        </button>
+                        <a href="{% url 'portal:member_list' %}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                            Back to Member List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+  
+        <!-- News Section (1/3 width on medium screens, full width on small screens) -->
+        <div class="w-full md:w-1/3 bg-gray-100 p-4 shadow-md rounded-lg">
+          <h2 class="text-xl font-bold text-gray-500 mb-2">Latest News</h2>
+          <div class="mb-4">
+            <h3 class="text-lg text-gray-500 font-semibold">Membership Updates</h3>
+            <p class="text-sm text-gray-700">Stay informed about the latest updates in our membership system.</p>
+          </div>
+          <div>
+            <h3 class="text-lg text-gray-500 font-semibold">Upcoming Staff Meeting</h3>
+            <p class="text-sm text-gray-700">All staff are invited to the upcoming annual meeting.</p>
+          </div>
+        </div>
+      </div>
+
+    {% endblock content %}
+  </div>
