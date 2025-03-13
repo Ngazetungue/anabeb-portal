@@ -7,6 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from .models import Guard, Member
+from users.models import CustomUser, Profile
 from .forms import GuardForm, MemberForm
 
 class StaffDashboardView(LoginRequiredMixin, TemplateView):
@@ -17,9 +18,12 @@ class StaffDashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         number_of_guards = Guard.objects.all().count()
         number_of_members = Member.objects.all().count()
+
+        staff_member = Profile.objects.all()
         
         context["number_of_guards"] = number_of_guards
         context["number_of_members"] = number_of_members
+        context["staff_member"] = staff_member
     
         return context
     

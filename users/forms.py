@@ -9,6 +9,7 @@ from .models import Profile
 class CustomRegistrationForm(UserCreationForm):
     USER_TYPE_CHOICES = [
         ('staff', 'Staff'),
+        ('admin', 'Admin'),
     ]
  
     user_type = forms.ChoiceField(choices=USER_TYPE_CHOICES)
