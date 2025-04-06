@@ -1,7 +1,8 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from datetime import date
+from decimal import Decimal, ROUND_HALF_UP
 
 class Guard(models.Model):
     SEX = [
@@ -156,3 +157,101 @@ class Member(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['identification_document'], name='unique_identification_document')
         ]
+
+class CompanyInfo(models.Model):
+    company_name = models.CharField(max_length=255, default="Anabeb Conservancy")
+    postal_address = models.CharField(max_length=255, default="P.O Box 108, Opuwo, Namibia")
+    address = models.CharField(max_length=255, default="Warmquelle, Kunene Region, Namibia")
+    phone = models.CharField(max_length=20, default="+264 81 123 4567")
+    email = models.EmailField(default="info@anabebconservancy.com")
+    website = models.URLField(default="http://anabebconservancy.com")
+    vat_number = models.CharField(max_length=20, default="1234567890")
+    logo = models.ImageField(upload_to='company/logos/', null=True, blank=True)
+    stamp = models.ImageField(upload_to='company/stamps/', null=True, blank=True)
+
+    def __str__(self):
+        return self.company_name
+
+    @classmethod
+    def get_instance(cls):
+        """
+        Ensures that only one instance exists, and creates it if it doesn't exist.
+        """
+        instance, created = cls.objects.get_or_create(id=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        """
+        Ensure only one instance of CompanyInfo exists in the database.
+        """
+        if not self.id and CompanyInfo.objects.exists():
+            raise ValueError("Only one CompanyInfo instance is allowed.")
+        super().save(*args, **kwargs)
+
+class Payslip(models.Model):
+    TAX_RATE = Decimal('0.15')
+    OVERTIME_RATE = Decimal('50.00')
+
+    company = models.ForeignKey(CompanyInfo, on_delete=models.CASCADE, related_name="payslips")
+    guard = models.ForeignKey(Guard, on_delete=models.CASCADE, related_name="payslips")
+    basic_salary = models.DecimalField(
+        max_digits=10, decimal_places=2, validators=[MinValueValidator(Decimal('0.00'))],
+        help_text="Base monthly salary before any deductions or bonuses."
+    )
+    hours_worked = models.PositiveIntegerField(
+        default=160, validators=[MinValueValidator(0), MaxValueValidator(300)],
+        help_text="Total hours worked in the month. Default is 160 (full-time)."
+    )
+    overtime_hours = models.PositiveIntegerField(
+        default=0, validators=[MinValueValidator(0), MaxValueValidator(100)],
+        help_text="Extra hours worked beyond the normal working hours."
+    )
+    overtime_pay = models.DecimalField(
+        max_digits=10, decimal_places=2, editable=False, default=0.00,
+        help_text="Automatically calculated based on overtime hours and rate."
+    )
+    bonus = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00,
+        help_text="Additional earnings (performance bonus, holiday bonus, etc.)."
+    )
+    allowances = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00,
+        help_text="Extra allowances (e.g., transport, housing)."
+    )
+    deductions = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00,
+        help_text="Deductions (e.g., loans, penalties, or other reductions)."
+    )
+    tax = models.DecimalField(
+        max_digits=10, decimal_places=2, editable=False,
+        help_text="Automatically calculated 15% tax on basic salary."
+    )
+    net_pay = models.DecimalField(
+        max_digits=10, decimal_places=2, editable=False,
+        help_text="Final salary after tax and deductions."
+    )
+    date_issued = models.DateField(auto_now_add=True, help_text="Date when the payslip was generated.")
+
+    class Meta:
+        unique_together = ('guard',)
+        ordering = ['-date_issued'] 
+
+    def save(self, *args, **kwargs):
+        """
+        Auto-calculates:
+        - Overtime Pay = Overtime Hours * Overtime Rate (default 50 NAD/hour)
+        - Tax = 15% of Basic Salary (rounded to 2 decimal places)
+        - Net Pay = Basic Salary + Overtime + Bonus + Allowances - (Deductions + Tax)
+        """
+        self.overtime_pay = (Decimal(self.overtime_hours) * self.OVERTIME_RATE).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        self.tax = (self.basic_salary * self.TAX_RATE).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        self.net_pay = (
+            self.basic_salary + self.overtime_pay + self.bonus + self.allowances - (self.deductions + self.tax)
+        ).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Payslip for {self.guard.first_name} {self.guard.last_name}"

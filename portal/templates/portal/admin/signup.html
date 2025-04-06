@@ -34,15 +34,16 @@
                     <!-- Two Fields per Row -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                         <div>{{ form.username|as_crispy_field }}</div>
-                        <div>{{ form.email|as_crispy_field }}</div>
-
-                        <div>{{ form.cellphone_number|as_crispy_field }}</div>
                         <div>{{ form.first_name|as_crispy_field }}</div>
 
                         <div>{{ form.last_name|as_crispy_field }}</div>
-                        <div>{{ form.sex|as_crispy_field }}</div>
 
                         <div>{{ form.date_of_birth|as_crispy_field }}</div>
+                        <div>{{ form.sex|as_crispy_field }}</div>
+
+                        <div>{{ form.email|as_crispy_field }}</div>
+                        <div>{{ form.cellphone_number|as_crispy_field }}</div>
+                        <div>{{ form.employment_date|as_crispy_field }}</div>
                         <div>{{ form.user_type|as_crispy_field }}</div>
 
                         <div>{{ form.status|as_crispy_field }}</div>

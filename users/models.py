@@ -37,6 +37,7 @@ class CustomUser(AbstractUser):
     user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='staff')
     status = models.CharField(max_length=10, choices=USER_STATUS_CHOICES, default='active')
     date_join = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    employment_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -49,7 +50,6 @@ class CustomUser(AbstractUser):
                 age -= 1
             return age
         return None
-
 
 class Profile(models.Model):
     SEX = [

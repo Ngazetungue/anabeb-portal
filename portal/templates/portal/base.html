@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -18,7 +19,7 @@
   </head>
   <body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
     <!-- Navigation Bar -->
-    <nav class="bg-white shadow-md py-3 w-full left-0">
+    <nav class="bg-blue-500 shadow-md py-3 w-full left-0">
       <div class="container mx-auto flex items-center justify-between px-4">
         <!-- Sidebar Toggle Button (Mobile Only) -->
         <button
@@ -27,9 +28,10 @@
         >
           <i class="bi bi-list"></i>
         </button>
-
-        <a href="#" class="text-lg font-semibold text-gray-800">Anabeb Portal</a>
-
+        <a href="#" class="text-lg font-semibold text-gray-800 flex items-center">
+          <img src="{% static 'portal/logo-anabeb.png' %}" alt="Logo" class="mr-2 h-24"> <!-- Logo image -->
+      </a>
+      
         <!-- Navbar Items -->
         <div class="flex items-center space-x-6">
           <!-- Messages Icon (Hidden on Mobile) -->
@@ -120,7 +122,7 @@
               <i class="bi bi-person-circle text-xl"></i>
               <strong>{{ request.user.first_name }} {{ request.user.last_name }}</strong>
             </button>
-            <div
+            {% comment %} <div
               class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md hidden group-hover:block"
             >
               <a
@@ -139,7 +141,7 @@
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >Sign Out</a
               >
-            </div>
+            </div> {% endcomment %}
           </div>
         </div>
       </div>
@@ -167,7 +169,7 @@
               <!-- Admin sees everything -->
               <li>
                 <a
-                  href="{% url "register" %}"
+                  href="{% url "portal:staff_list" %}"
                   class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
                 >
                   <i class="bi bi-person-badge"></i>
@@ -192,6 +194,33 @@
                   <span>Manage Guard</span>
                 </a>
               </li>
+              <li>
+                <a
+                  href="{% url 'portal:payslip_list' %}"
+                  class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
+                >
+                  <i class="bi bi-shield-lock"></i>
+                  <span>Pay Slip</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'portal:payslip_list' %}"
+                  class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
+                >
+                  <i class="bi bi-shield-lock"></i>
+                  <span>Settings</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'logout' %}"
+                  class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
+                >
+                  <i class="bi bi-shield-lock"></i>
+                  <span>Log out</span>
+                </a>
+              </li>
             {% elif request.user.user_type == 'staff' %}
               <!-- Staff sees only Member and Guard -->
               <li>
@@ -210,6 +239,15 @@
                 >
                   <i class="bi bi-shield-lock"></i>
                   <span>Manage Guard</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'portal:payslip_list' %}"
+                  class="flex items-center space-x-2 text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-md"
+                >
+                  <i class="bi bi-shield-lock"></i>
+                  <span>Pay Slip</span>
                 </a>
               </li>
             {% endif %}

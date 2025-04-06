@@ -1,11 +1,27 @@
 {% extends "portal/base.html" %}
 
 {% block content %}
-
-<!-- Button for Adding New Member or Guard -->
-<a href="{% url 'portal:add_member' %}" class="absolute top-13 right-0 mt-4 mr-6 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-600 transition duration-200 ease-in-out">
-    Add New Member
-</a>
+<div class="w-full px-6 py-8 bg-gray-100">
+   <!-- Button for Adding New Member-->
+    <a href="{% url 'portal:add_member' %}" class="absolute top-35 right-0 mt-4 mr-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-600 transition duration-200 ease-in-out">
+        Add New Member
+    </a>
+    <!-- Search Bar -->
+    <form method="get" action="{% url 'portal:member_list' %}" class="mb-6 flex items-center gap-4">
+        <input
+            type="text"
+            name="q"
+            placeholder="Search by Member name ..."
+            value="{{ query }}"
+            class="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+        />
+        <button
+            type="submit"
+            class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+        >
+            Search
+        </button>
+    </form>
 
 <!-- Table for Model Data -->
 <div class="w-full bg-white p-6 shadow-xl rounded-lg mt-12 overflow-x-auto">
@@ -81,5 +97,5 @@
 </div>
 
 </div>
-
+</div>
 {% endblock content %}
