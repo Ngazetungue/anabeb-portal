@@ -1,6 +1,7 @@
 # **Anabeb Conservancy - Management Portal**  
 
-For testing purpose: username:admin and password:admin123456
+For testing purpose: username:admin and password:admin12345
+The system divided into two interfave admin and staff, but for testing purpose i share login details of admin only. By the way you can create/register staff member through admin.
 
 ## **Project Overview**  
 **Anabeb Conservancy Portal** is a secure personnel management system built with **Django**, designed to empower:  
