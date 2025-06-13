@@ -1,90 +1,78 @@
-# Management System for Anabeb Conservancy
+# **Anabeb Conservancy - Management Portal**  
 
-This is a project to create a Management System using Django. Below is a checklist of tasks to be completed for the project.
+For testing purpose: username:admin and password:admin123456
 
-## 1. Project Planning and Requirements Gathering
-- [ ] Define the scope and features of the system
-- [ ] Identify all stakeholders (e.g., members, employees, administrators)
-- [ ] Gather requirements for member and employee management
-- [ ] Identify additional features (e.g., wildlife tracking, donation system, event management)
-- [ ] Create a timeline and set milestones for the project
+## **Project Overview**  
+**Anabeb Conservancy Portal** is a secure personnel management system built with **Django**, designed to empower:  
+- **Administrators** to manage all users (staff/guards/members)  
+- **Staff** to generate and download guard payslips (PDF)  
+- **Role-based access control** with admin-only user creation  
 
-## 2. Environment Setup
-- [ ] Install Python and Django
-- [ ] Set up a new Django project
-- [ ] Set up a virtual environment
-- [ ] Install necessary libraries (e.g., Django REST framework, Pillow)
-- [ ] Configure the database (SQLite for development, PostgreSQL for production)
+The platform combines **Django's security** with **Tailwind CSS's responsive interface** and **ReportLab** for PDF generation.  
 
-## 3. Create Django App Structure
-- [ ] Set up a new Django app for managing members (`members`)
-- [ ] Set up a new Django app for managing employees (`employees`)
-- [ ] Create additional apps for other features (e.g., wildlife tracking, events)
+## **Key Features**  
 
-## 4. Database Models (ORM)
-- [ ] Create Member model (personal info, membership type, join date, etc.)
-- [ ] Create Employee model (position, date_of_hire, salary, etc.)
-- [ ] Create Wildlife model (if applicable)
-- [ ] Create Event model (if applicable)
+### **🔐 Core Functionality**  
+- **Role-based authentication system** (admin/staff login)  
+- **Personnel management** (members, guards, staff)  
+- **PDF payslip generation** with automatic calculations  
+- **Admin dashboard** with full system control  
+- **Staff dashboard** with limited system access  
+- **User creation/management** (staff, members & guards)  
 
-## 5. Create Views and Templates
-- [ ] Member Registration and Management views
-- [ ] Employee Management views
-- [ ] Member and Employee Dashboards
-- [ ] Wildlife and Event Management views (if applicable)
+### **User Experience**  
+- **Responsive Tailwind design** works on all devices  
+- **Intuitive payroll interface** for staff  
+- **Quick-search** for personnel records  
 
-## 6. Forms and Validation
-- [ ] Create Django forms for member registration
-- [ ] Create Django forms for employee registration
-- [ ] Add form validation logic
-- [ ] Add custom form error messages
+## **Technology Stack**  
 
-## 7. Authentication and Permissions
-- [ ] Set up user authentication (login, logout, password management)
-- [ ] Create custom permissions for different user roles
-- [ ] Use Django permissions to control access to views
+### **Backend**  
+| Technology | Description | Why It Was Chosen |
+|------------|-------------|-------------------|
+| **<img src="https://img.shields.io/badge/Django-092E20?logo=django&logoColor=white" alt="Django" />** | High-level Python framework | Provides **built-in admin panel**, **secure authentication**, and **rapid development** for conservancy management needs |
+| **<img src="https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL" />** | Relational database | Handles **personnel records** efficiently with **ACID compliance** and **Django native support** |
 
-## 8. Admin Interface
-- [ ] Customize Django admin panel for managing members and employees
-- [ ] Add search, filtering, and sorting functionality in the admin panel
-- [ ] Admin views for managing wildlife and events
+### **Frontend**  
+| Technology | Description | Why It Was Chosen |
+|------------|-------------|-------------------|
+| **<img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />** | Utility-first CSS framework | Enables **rapid UI development** with responsive design and customization |
+| **<img src="https://img.shields.io/badge/HTMX-1E4A75?logo=html5&logoColor=white" alt="HTMX" />** | Dynamic HTML | Adds **interactivity** to tables/forms without JavaScript complexity |
 
-## 9. Styling and User Interface
-- [ ] Design professional templates with a user-friendly layout
-- [ ] Style the frontend using CSS/Bootstrap
-- [ ] Ensure responsive design for mobile and desktop
+### **Services**  
+| Technology | Description | Why It Was Chosen |
+|------------|-------------|-------------------|
+| **<img src="https://img.shields.io/badge/ReportLab-FF6F00?logo=python&logoColor=white" alt="ReportLab" />** | PDF generator | Creates **professional payslips** with precise layout control |
+| **<img src="https://img.shields.io/badge/Django_Allauth-44B78B?logo=django&logoColor=white" alt="Django Allauth" />** | Authentication | Provides **secure login** with email verification capabilities |
 
-## 10. Security and Data Privacy
-- [ ] Implement strong password policies
-- [ ] Ensure sensitive data is encrypted
-- [ ] Implement role-based access control (RBAC)
-- [ ] Regular database backups
+## **Project Screenshots**  
 
-## 11. Testing
-- [ ] Write unit tests for models, views, and forms
-- [ ] Test user registration, login functionality, and permissions
-- [ ] Conduct integration testing
-- [ ] Perform user acceptance testing (UAT)
+### **1. Login Page**  
+<img width="1419" alt="Login Page" src="https://github.com/user-attachments/assets/cbdded4c-17bd-4d93-b9ef-683aa95d20a6" />  
+*Secure role-based authentication gateway*  
 
-## 12. Deployment
-- [ ] Deploy the system to a production environment (Heroku, AWS, etc.)
-- [ ] Set up production database (PostgreSQL)
-- [ ] Configure static and media files
-- [ ] Set up email notifications
+### **2. Admin Dashboard**  
+<img width="1437" alt="Admin Dashboard" src="https://github.com/user-attachments/assets/b4947763-42f9-469f-8a3e-1046ab316797" />  
+- **User management table**  
+- **System configuration panel**  
+- **Audit log access**  
 
-## 13. Documentation
-- [ ] Document the code and workflows
-- [ ] Write user manuals for admins, employees, and members
-- [ ] Provide setup and deployment instructions
+### **3. Staff Dashboard**   
+- **Guard timesheet entry**  
+- **Payslip generation button**  
+- **Personnel search**  
 
-## 14. Post-Deployment
-- [ ] Monitor the system for issues or bugs
-- [ ] Address user feedback and update the system
-- [ ] Regularly update the system with new features or security patches
+### **4. Member Management**  
+<img width="1437" alt="Member Management" src="https://github.com/user-attachments/assets/8194ef9a-15da-496d-84fa-e53c04b3008c" />  
+- Add/edit conservancy members  
+- Export member data  
 
-## Additional Features (Optional)
-- [ ] Wildlife tracking (animal movements, health, conservation efforts)
-- [ ] Donation system for members and public
-- [ ] Reporting features (membership, employee performance, wildlife)
-- [ ] Email/Notification system for renewals, events, and updates
-- [ ] Payment integration (Stripe, PayPal)
+### **5. Payslip Generation Workflow**  
+<img width="1437" alt="Payslip Interface" src="https://github.com/user-attachments/assets/7cc28cd9-bc74-458c-9663-61b0b913b145" />  
+1. Navigate to **Guards** section  
+2. Enter hours worked  
+3. Click **Download Payslip**  
+4. System generates PDF via ReportLab  
+
+**Sample Payslip Output:**  
+<img width="1026" alt="Generated Payslip" src="https://github.com/user-attachments/assets/cb5c0aef-0682-43a4-9037-6139ca919397" />  
