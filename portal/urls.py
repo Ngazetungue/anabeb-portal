@@ -43,4 +43,13 @@ urlpatterns = [
     path('payslip/<int:payslip_id>/', views.payslip_detail, name='payslip_detail'),
     path('payslip/delete/<int:pk>/', views.payslip_delete, name='payslip_delete'),
     path('payslip/download/<int:payslip_id>/', views.payslip_download_pdf, name='payslip_download_pdf'),
+
+    path('download/members/', views.download_members_list_pdf, name='download_members_list_pdf'),
+    path('download/guards/', views.download_guards_list_pdf, name='download_guards_list_pdf'),
+
+    # path('company_info/', views.add_company_info, name='add_company_info'),
+    path('company_info/', views.company_info_list, name='company_info_list'),
+    path('company_info/<int:company_id>//', views.company_info_detail, name='company_info_detail'),
+    path('company_info/<int:pk>/', views.edit_company_info, name='edit_company_info'),
+    path('company_info/<int:pk>/', views.delete_company_info, name='delete_company_info'),
 ]

@@ -7,74 +7,87 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Guard, Member, Payslip
+from .models import Guard, Member, Payslip, CompanyInfo
 from users.models import CustomUser, Profile
 from users.forms import CustomRegistrationForm
-from .forms import GuardForm, MemberForm, PayslipForm
+from .forms import GuardForm, MemberForm, PayslipForm, CompanyInfoForm
 
 from django.db.models import Q
 
 from reportlab.lib import colors
 from reportlab.lib.colors import Color
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Image
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Image, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle
 
 from datetime import date
 
+
+# Shared context function
+def get_dashboard_context():
+    number_of_guards = Guard.objects.count()
+    number_of_members = Member.objects.count()
+    number_of_staffs = CustomUser.objects.count()
+
+    staff_member = Profile.objects.all()
+    member_list = Member.objects.all()[:3]
+    payslip_list = Payslip.objects.all()[:3]
+
+    male_count = Member.objects.filter(gender='male').count()
+    female_count = Member.objects.filter(gender='female').count()
+
+    under_18 = 0
+    age_18_35 = 0
+    age_36_60 = 0
+    over_60 = 0
+
+    for member in Member.objects.all():
+        if member.date_of_birth:
+            age = date.today().year - member.date_of_birth.year
+            if age < 18:
+                under_18 += 1
+            elif 18 <= age <= 35:
+                age_18_35 += 1
+            elif 36 <= age <= 60:
+                age_36_60 += 1
+            else:
+                over_60 += 1
+
+    return {
+        "number_of_guards": number_of_guards,
+        "number_of_members": number_of_members,
+        "number_of_staffs": number_of_staffs,
+        "staff_member": staff_member,
+        "member_list": member_list,
+        "payslip_list": payslip_list,
+        "male_count": male_count,
+        "female_count": female_count,
+        "under_18": under_18,
+        "age_18_35": age_18_35,
+        "age_36_60": age_36_60,
+        "over_60": over_60,
+    }
+
+
+# Staff Dashboard
 class StaffDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = 'portal/staff/staff-dashboard.html'
-    
+    template_name = 'portal/admin/dashboard.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        number_of_guards = Guard.objects.all().count()
-        number_of_members = Member.objects.all().count()
-        number_of_staffs = CustomUser.objects.all().count()
-
-        staff_member = Profile.objects.all()
-        member_list = Member.objects.all()[:3]
-        payslip_list = Payslip.objects.all()[:3]
-
-        male_count = Member.objects.filter(gender='male').count()
-        female_count = Member.objects.filter(gender='female').count()
-
-        # Calculate age categories
-        under_18 = 0
-        age_18_35 = 0
-        age_36_60 = 0
-        over_60 = 0
-
-        for member in Member.objects.all():
-            if member.date_of_birth:
-                age = date.today().year - member.date_of_birth.year
-                if age < 18:
-                    under_18 += 1
-                elif 18 <= age <= 35:
-                    age_18_35 += 1
-                elif 36 <= age <= 60:
-                    age_36_60 += 1
-                else:
-                    over_60 += 1
-
-        context["under_18"] = under_18
-        context["age_18_35"] = age_18_35
-        context["age_36_60"] = age_36_60
-        context["over_60"] = over_60
-        
-        context["number_of_guards"] = number_of_guards
-        context["number_of_members"] = number_of_members
-        context["staff_member"] = staff_member
-        context["number_of_staffs"] = number_of_staffs
-        context["member_list"] = member_list
-        context["payslip_list"] = payslip_list
-        context["male_count"] = male_count
-        context["female_count"] = female_count
-
+        context.update(get_dashboard_context())
         return context
-    
-class AdminDashboardView(LoginRequiredMixin,TemplateView):
-    template_name = 'portal/admin/admin-dashboard.html'
+
+
+# Admin Dashboard
+class AdminDashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'portal/admin/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(get_dashboard_context())
+        return context
 
 def is_admin(user):
     return user.is_authenticated and user.user_type == 'admin'
@@ -382,7 +395,6 @@ def payslip_download_pdf(request, payslip_id):
 
     elements.append(salary_table)
 
-    # Footer
     footer_data = [
         [Paragraph("Thank you for your valued contribution to the company. Your dedication and hard work are greatly appreciated!", normal_style)],
         [Paragraph(f"For any inquiries, please contact: {payslip.company.email}", normal_style)],
@@ -400,3 +412,175 @@ def payslip_download_pdf(request, payslip_id):
 
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename=f'{payslip.guard.first_name}_{payslip.guard.last_name}_payslip.pdf')
+
+
+@login_required
+def download_members_list_pdf(request):
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=30)
+    elements = []
+
+    styles = getSampleStyleSheet()
+    normal_style = styles['Normal']
+    title_style = styles['Title']
+    title_style.fontSize = 14
+    normal_style.fontSize = 8
+
+    company = CompanyInfo.objects.first()
+
+    if company and company.logo:
+        logo_path = company.logo.path
+        logo_img = Image(logo_path, width=100, height=100)
+        logo_img.hAlign = 'CENTER'
+        elements.append(logo_img)
+
+        centered_style = ParagraphStyle('centered', parent=normal_style, alignment=1)  
+        elements.append(Spacer(1, 12)) 
+        elements.append(Paragraph(f"{company.company_name}", centered_style))
+        elements.append(Paragraph(f"{company.phone} | {company.email}", centered_style))
+        elements.append(Spacer(1, 12))
+
+    elements.append(Paragraph("Member List", title_style))
+    elements.append(Spacer(1, 12))
+
+    member_header = [
+        ["First Name", "Last Name", "Gender", "ID", "DOB", "Phone", "Village", "Date Joined", "Status", "Date Deceased", "Age", "Years Active"]
+    ]
+
+    member_data = []
+    for member in Member.objects.all():
+        member_data.append([
+            member.first_name,
+            member.last_name,
+            member.get_gender_display(),
+            member.identification_document,
+            member.date_of_birth.strftime('%Y-%m-%d'),
+            member.cellphone_number,
+            member.get_village_display(),
+            member.date_join.strftime('%Y-%m-%d'),
+            member.get_status_display(),
+            member.date_deceased.strftime('%Y-%m-%d') if member.date_deceased else "-",
+            member.age(),
+            member.membership_period(),
+        ])
+
+    table_data = member_header + member_data
+
+    table = Table(table_data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.brown),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 7),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.lightgrey])
+    ]))
+    elements.append(table)
+    doc.build(elements)
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='members_list.pdf')
+
+@login_required
+def download_guards_list_pdf(request):
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=30, leftMargin=30, topMargin=30, bottomMargin=30)
+    elements = []
+
+    styles = getSampleStyleSheet()
+    normal_style = styles['Normal']
+    title_style = styles['Title']
+    title_style.fontSize = 14
+    normal_style.fontSize = 8
+
+    company = CompanyInfo.objects.first()
+
+    if company and company.logo:
+        logo_path = company.logo.path
+        logo_img = Image(logo_path, width=100, height=100)
+        logo_img.hAlign = 'CENTER'
+        elements.append(logo_img)
+
+        centered_style = ParagraphStyle('centered', parent=normal_style, alignment=1)  
+        elements.append(Spacer(1, 12)) 
+        elements.append(Paragraph(f"{company.company_name}", centered_style))
+        elements.append(Paragraph(f"{company.phone} | {company.email}", centered_style))
+        elements.append(Spacer(1, 12))
+
+    elements.append(Paragraph("Guard List", title_style))
+    elements.append(Spacer(1, 12))
+
+    guard_header = [
+        ["First Name", "Last Name", "Gender", "ID", "DOB", "Phone", "Village Assigned", "Date Employed", "Status", "Age"]
+    ]
+
+    guard_data = []
+    for guard in Guard.objects.all():
+        guard_data.append([
+            guard.first_name,
+            guard.last_name,
+            guard.get_gender_display(),
+            guard.identification_document,
+            guard.date_of_birth.strftime('%Y-%m-%d'),
+            guard.cellphone_number,
+            guard.get_village_assigned_display(), 
+            guard.date_employed.strftime('%Y-%m-%d') if guard.date_employed else "-",
+            guard.get_status_display(),
+            guard.age() if guard.date_of_birth else "-"
+        ])
+
+    table_data = guard_header + guard_data
+
+    table = Table(table_data, repeatRows=1)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.brown),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 7),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.lightgrey])
+    ]))
+    elements.append(table)
+    doc.build(elements)
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='guards_list.pdf')
+
+
+# def add_company_info(request):
+#     if request.method == 'POST':
+#         form = CompanyInfoForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('portal:company_info_list')
+#     else:
+#         form = CompanyInfoForm()
+#     return render(request, 'portal/admin/add_company_info.html', {'form': form})
+
+def company_info_list(request):
+    company_info = CompanyInfo.objects.all() 
+    return render(request, 'portal/admin/company_info_list.html', {'company_info': company_info})
+
+def company_info_detail(request, company_id):
+    company_info = get_object_or_404(CompanyInfo, id=company_id)
+    return render(request, 'portal/admin/company_info_detail.html', {'company_info': company_info})
+
+def edit_company_info(request, pk):
+    company_info = CompanyInfo.get_instance()
+    if request.method == 'POST':
+        form = CompanyInfoForm(request.POST, request.FILES, instance=company_info)
+        if form.is_valid():
+            form.save()
+            return redirect('portal:company_info_list')
+    else:
+        form = CompanyInfoForm(instance=company_info)
+    return render(request, 'portal/admin/edit_company_info.html', {'form': form})
+
+def delete_company_info(request, pk):
+    company_info = CompanyInfo.get_instance()
+    if request.method == 'POST':
+        company_info.delete()
+        return redirect('portal:add_company_info')
+    return render(request, 'portal/admin/confirm_delete.html', {'company_info': company_info})

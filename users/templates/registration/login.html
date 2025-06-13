@@ -22,16 +22,16 @@
   </div>
 
   <!-- Login Form Section -->
-  <div class="w-full lg:w-1/2 flex items-center justify-center bg-gray-200 p-6">
+  <div class="w-full lg:w-1/2 flex items-center justify-center bg-blue-700 p-6">
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
       <div class="text-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-600">Portal</h1>
-        <p class="text-gray-600">Exclusive access for Anabeb Conservancy Wildlife Management System members</p>
+        <h1 class="text-2xl font-bold text-blue-600">Portal</h1>
+        <p class="text-gray-600">Exclusive access for Anabeb Conservancy Staff members</p>
       </div>
       <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
         {{ form|crispy }}
-        <button type="submit" class="w-full bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-500 transition">Login</button>
+        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-gray-500 transition">Login</button>
       </form>
       {% comment %} <p class="mt-4 text-center text-gray-600">Not a member yet? <a href="#" class="text-blue-600 hover:underline">Apply to become a member</a></p> {% endcomment %}
     </div>

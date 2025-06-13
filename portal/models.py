@@ -4,6 +4,38 @@ from django.core.validators import RegexValidator, MinValueValidator, MaxValueVa
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 
+class CompanyInfo(models.Model):
+    company_name = models.CharField(max_length=255, default="Anabeb Conservancy")
+    postal_address = models.CharField(max_length=255, default="P.O Box 108, Opuwo, Namibia")
+    address = models.CharField(max_length=255, default="Warmquelle, Kunene Region, Namibia")
+    phone = models.CharField(max_length=20, default="+264 81 123 4567")
+    email = models.EmailField(default="info@anabebconservancy.com")
+    website = models.URLField(default="http://anabebconservancy.com")
+    vat_number = models.CharField(max_length=20, default="1234567890")
+    logo = models.ImageField(upload_to='company/logos/', null=True, blank=True)
+    stamp = models.ImageField(upload_to='company/stamps/', null=True, blank=True)
+
+    def __str__(self):
+        return self.company_name
+
+    @classmethod
+    def get_instance(cls):
+        """
+        Ensures that only one instance exists, and creates it if it doesn't exist.
+        """
+        instance, created = cls.objects.get_or_create(id=1)
+        if created:
+            instance.save()
+        return instance
+
+    def save(self, *args, **kwargs):
+        """
+        Ensure only one instance of CompanyInfo exists in the database.
+        """
+        if not self.id and CompanyInfo.objects.exists():
+            raise ValueError("Only one CompanyInfo instance is allowed.")
+        super().save(*args, **kwargs)
+
 class Guard(models.Model):
     SEX = [
         ("male", "Male"),
@@ -85,7 +117,6 @@ class Member(models.Model):
         ("okaturua", "Okaturua"),
         ("otjatjondjira", "Otjatjondjira"),
     ]
-
     first_name = models.CharField(max_length=150, help_text="Enter the member's first name.")
     last_name = models.CharField(max_length=150, help_text="Enter the member's last name.")
     gender = models.CharField(max_length=10, choices=SEX, default="male", help_text="Select the member's gender.")
@@ -157,38 +188,6 @@ class Member(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['identification_document'], name='unique_identification_document')
         ]
-
-class CompanyInfo(models.Model):
-    company_name = models.CharField(max_length=255, default="Anabeb Conservancy")
-    postal_address = models.CharField(max_length=255, default="P.O Box 108, Opuwo, Namibia")
-    address = models.CharField(max_length=255, default="Warmquelle, Kunene Region, Namibia")
-    phone = models.CharField(max_length=20, default="+264 81 123 4567")
-    email = models.EmailField(default="info@anabebconservancy.com")
-    website = models.URLField(default="http://anabebconservancy.com")
-    vat_number = models.CharField(max_length=20, default="1234567890")
-    logo = models.ImageField(upload_to='company/logos/', null=True, blank=True)
-    stamp = models.ImageField(upload_to='company/stamps/', null=True, blank=True)
-
-    def __str__(self):
-        return self.company_name
-
-    @classmethod
-    def get_instance(cls):
-        """
-        Ensures that only one instance exists, and creates it if it doesn't exist.
-        """
-        instance, created = cls.objects.get_or_create(id=1)
-        if created:
-            instance.save()
-        return instance
-
-    def save(self, *args, **kwargs):
-        """
-        Ensure only one instance of CompanyInfo exists in the database.
-        """
-        if not self.id and CompanyInfo.objects.exists():
-            raise ValueError("Only one CompanyInfo instance is allowed.")
-        super().save(*args, **kwargs)
 
 class Payslip(models.Model):
     TAX_RATE = Decimal('0.15')

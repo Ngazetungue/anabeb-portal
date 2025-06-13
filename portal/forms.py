@@ -1,5 +1,5 @@
 from django import forms
-from .models import Guard, Member, Payslip
+from .models import Guard, Member, Payslip, CompanyInfo
 
 class GuardForm(forms.ModelForm):
     class Meta:
@@ -44,3 +44,8 @@ class PayslipForm(forms.ModelForm):
         if basic_salary <= 0:
             raise forms.ValidationError("Basic salary must be greater than zero.")
         return basic_salary
+
+class CompanyInfoForm(forms.ModelForm):
+    class Meta:
+        model = CompanyInfo
+        fields = ['company_name', 'postal_address', 'address', 'phone', 'email', 'website', 'vat_number', 'logo', 'stamp']
