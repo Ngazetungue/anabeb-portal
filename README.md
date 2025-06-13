@@ -57,15 +57,16 @@ The platform combines **Django's security** with **Tailwind CSS's responsive int
 - **System configuration panel**  
 - **Audit log access**  
 
-### **3. Staff Dashboard**   
+
+### **3. Member Management**  
+<img width="1437" alt="Member Management" src="https://github.com/user-attachments/assets/8194ef9a-15da-496d-84fa-e53c04b3008c" />  
+- Add/edit conservancy members  
+- Export member data
+
+### **4. Staff Dashboard**   
 - **Guard timesheet entry**  
 - **Payslip generation button**  
 - **Personnel search**  
-
-### **4. Member Management**  
-<img width="1437" alt="Member Management" src="https://github.com/user-attachments/assets/8194ef9a-15da-496d-84fa-e53c04b3008c" />  
-- Add/edit conservancy members  
-- Export member data  
 
 ### **5. Payslip Generation Workflow**  
 <img width="1437" alt="Payslip Interface" src="https://github.com/user-attachments/assets/7cc28cd9-bc74-458c-9663-61b0b913b145" />  
